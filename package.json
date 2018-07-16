@@ -2,7 +2,7 @@
   "name": "dyno-web-interface",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://samiamlabs.github.io/dyno-ros-interface",
+  "homepage": "http://io.dynorobotics.se/",
   "dependencies": {
     "@material-ui/core": "^1.4.0",
     "@material-ui/icons": "^1.1.0",
