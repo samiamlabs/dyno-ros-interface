@@ -58,9 +58,9 @@ class Capabilities extends React.Component {
     available.forEach(capability => {
       if (capability.provider === provider) {
         if (isInputChecked) {
-          this.actions.startCapability(capability.interface_name, provider);
+          CapabilitiesActions.startCapability(capability.interface_name, provider);
         } else {
-          this.actions.stopCapability(capability.interface_name);
+          CapabilitiesActions.stopCapability(capability.interface_name);
         }
         return;
       }
@@ -192,7 +192,7 @@ class CapabilityProvider extends React.Component {
           <Switch
             color="primary"
             checked={this.props.running}
-            onToggle={this.props.handleToggle.bind(this, this.props.name)}
+            onChange={this.props.handleToggle.bind(this, this.props.name)}
           />
         }
         label={label}
