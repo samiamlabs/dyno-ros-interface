@@ -94,7 +94,7 @@ class Capabilities extends React.Component {
           <Grid container direction="column" justify="flex-start">
             <Grid item>
               <Paper className={classes.banner}>
-                <Typography align="center">Robot Apps</Typography>
+                <Typography align="center">Capabilities</Typography>
               </Paper>
             </Grid>
             <Grid item className={classes.capabilities}>
