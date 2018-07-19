@@ -5,6 +5,8 @@ import RappStarterActions from '../actions/RappStarterActions';
 import RappStarterStore from '../stores/RappStarterStore';
 
 import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 import PowerIcon from '@material-ui/icons/PowerSettingsNew';
 
@@ -21,6 +23,9 @@ const styles = (theme: Object) => ({
   },
   icon: {
     margin: theme.spacing.unit * 2
+  },
+  banner: {
+    backgroundColor: theme.palette.primary.light
   }
 });
 
@@ -106,8 +111,17 @@ class RappStarter extends React.PureComponent {
 
     return (
       <div className={classes.root}>
-        <Paper className={classes.paper}>
-          <List>{rappList}</List>
+        <Paper>
+          <Grid container direction="column" justify="flex-start">
+            <Grid item>
+              <Paper className={classes.banner}>
+                <Typography align="center">Robot Apps</Typography>
+              </Paper>
+            </Grid>
+            <Grid item>
+              <List>{rappList}</List>
+            </Grid>
+          </Grid>
         </Paper>
       </div>
     );

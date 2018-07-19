@@ -4,6 +4,9 @@ import CapabilitiesActions from '../actions/CapabilitiesActions';
 import CapabilitiesStore from '../stores/CapabilitiesStore';
 
 import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+
 import Switch from '@material-ui/core/Switch';
 
 import FormLabel from '@material-ui/core/FormLabel';
@@ -18,7 +21,10 @@ const styles = theme => ({
   root: {
     flexGrow: 1
   },
-  paper: {
+  banner: {
+    backgroundColor: theme.palette.primary.light
+  },
+  capabilities: {
     padding: theme.spacing.unit * 2,
     textAlign: 'center',
     color: theme.palette.text.secondary
@@ -58,7 +64,10 @@ class Capabilities extends React.Component {
     available.forEach(capability => {
       if (capability.provider === provider) {
         if (isInputChecked) {
-          CapabilitiesActions.startCapability(capability.interface_name, provider);
+          CapabilitiesActions.startCapability(
+            capability.interface_name,
+            provider
+          );
         } else {
           CapabilitiesActions.stopCapability(capability.interface_name);
         }
@@ -81,12 +90,21 @@ class Capabilities extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Paper className={classes.paper}>
-          <CapabilityTable
-            available={available_capabilities}
-            running={running_providers}
-            handleToggle={this.handleToggle}
-          />
+        <Paper>
+          <Grid container direction="column" justify="flex-start">
+            <Grid item>
+              <Paper className={classes.banner}>
+                <Typography align="center">Robot Apps</Typography>
+              </Paper>
+            </Grid>
+            <Grid item className={classes.capabilities}>
+              <CapabilityTable
+                available={available_capabilities}
+                running={running_providers}
+                handleToggle={this.handleToggle}
+              />
+            </Grid>
+          </Grid>
         </Paper>
       </div>
     );

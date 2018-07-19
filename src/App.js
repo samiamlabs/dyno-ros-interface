@@ -28,6 +28,7 @@ import Cookies from 'universal-cookie';
 
 import RappStarter from './js/components/RappStarter.js';
 import Capabilities from './js/components/Capabilities.js';
+import Cartographer from './js/components/Cartographer';
 
 const styles = (theme: Object) => ({
   root: {
@@ -227,6 +228,9 @@ class App extends React.Component<ProvidedProps & Props, State> {
           </Grid>
           <Grid item>
             <Capabilities rosClient={this.state.rosClient} />
+          </Grid>
+          <Grid item>
+            <Cartographer rosClient={this.state.rosClient} />
           </Grid>
         </Grid>
       )}
