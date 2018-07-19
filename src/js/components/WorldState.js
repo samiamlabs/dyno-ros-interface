@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import CartographerActions from '../actions/CartographerActions';
+import WorldStateActions from '../actions/WorldStateActions';
 
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
@@ -20,7 +20,7 @@ const styles = (theme: Object) => ({
     backgroundColor: theme.palette.primary.light
   },
   buttonContainer: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing.unit * 2
   }
 });
 
@@ -29,23 +29,23 @@ type Props = {
   rosClient: Object
 };
 
-class Cartographer extends React.Component<Props> {
+class WorldState extends React.Component<Props> {
   componentWillMount() {
     if (typeof this.props.rosClient !== 'undefined') {
-      CartographerActions.connect(this.props.rosClient);
+      WorldStateActions.connect(this.props.rosClient);
     }
   }
 
   componentWillUnmount() {
-    CartographerActions.disconnect();
+    WorldStateActions.disconnect();
   }
 
-  handleSaveStateClick = (event: SyntheticEvent<HTMLButtonElement>) => {
-    CartographerActions.saveState();
+  handleAddCurrentLocation = (event: SyntheticEvent<HTMLButtonElement>) => {
+    WorldStateActions.addCurrentLocation();
   };
 
-  handleFinishTrajectory = (event: SyntheticEvent<HTMLButtonElement>) => {
-    CartographerActions.finishTrajectory(0);
+  handleClearLocations = (event: SyntheticEvent<HTMLButtonElement>) => {
+    WorldStateActions.clearLocations();
   };
 
   render() {
@@ -57,23 +57,32 @@ class Cartographer extends React.Component<Props> {
           <Grid container direction="column" justify="flex-start">
             <Grid item>
               <Paper className={classes.banner}>
-                <Typography align="center">Cartographer</Typography>
+                <Typography align="center">World State</Typography>
               </Paper>
             </Grid>
             <Grid item>
-              <Grid container className={classes.buttonContainer} justify="space-around" spacing={24}>
+              <Grid
+                container
+                className={classes.buttonContainer}
+                justify="space-around"
+                spacing={24}
+              >
                 <Grid item>
-                  <Button variant="outlined" onClick={this.handleFinishTrajectory}>
-                    Finish Trajectory 0
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={this.handleClearLocations}
+                  >
+                    Clear Locations
                   </Button>
                 </Grid>
                 <Grid item>
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={this.handleSaveStateClick}
+                    onClick={this.handleAddCurrentLocation}
                   >
-                    Save State
+                    Add Current Location
                   </Button>
                 </Grid>
               </Grid>
@@ -85,4 +94,4 @@ class Cartographer extends React.Component<Props> {
   }
 }
 
-export default withRoot(withStyles(styles)(Cartographer));
+export default withRoot(withStyles(styles)(WorldState));
