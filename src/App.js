@@ -4,6 +4,8 @@ import React from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import withRoot from './withRoot';
 
+import AppStore from './js/stores/AppStore';
+
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -67,7 +69,8 @@ class App extends React.Component<ProvidedProps & Props, State> {
     hostnameDialogOpen: false,
     hostnameText: 'localhost',
     rosConnectionStatus: 'disconnected',
-    cookies: new Cookies()
+    cookies: new Cookies(),
+    store: AppStore.getState()
   };
 
   componentWillMount() {
@@ -77,7 +80,19 @@ class App extends React.Component<ProvidedProps & Props, State> {
     }
     this.setState({hostnameText: hostname});
     this.setRosClient(hostname);
+
+    AppStore.on('change', this.getAll);
   }
+
+  componentWillUnmount() {
+    AppStore.removeListener('change', this.getAll);
+  }
+
+  getAll = () => {
+    this.setState({
+      store: AppStore.getState()
+    });
+  };
 
   setRosClient = (hostname: string) => {
     const rosUrl = 'ws://' + hostname + ':9090';
@@ -132,10 +147,45 @@ class App extends React.Component<ProvidedProps & Props, State> {
     this.state.cookies.set('hostname', this.state.hostnameText, {path: '/'});
   };
 
+  getRunningRapp = () => {
+    const rappList = this.state.store.get('available_rapps');
+
+    let runningRapp = null;
+    rappList.forEach(rapp => {
+      if (rapp.get('status') === 'Running') {
+        runningRapp = rapp.get('name');
+      }
+    });
+
+    return runningRapp;
+  };
+
   render() {
     const {classes} = this.props;
     const {anchorEl} = this.state;
     const open = Boolean(anchorEl);
+    const {store} = this.state;
+
+    const running_capabilities = store
+      .get('running_capabilities')
+      .toJS()
+      .map(capability => {
+        return capability.capability.provider;
+      });
+
+    let show_cartographer = false;
+    let show_world_state = false;
+
+    running_capabilities.forEach(provider => {
+      if (provider.startsWith('dyno_capabilities/cartographer')) {
+        show_cartographer = true;
+      }
+      if (provider === 'dyno_capabilities/world_state') {
+        show_world_state = true;
+      }
+    });
+
+    const show_route_scheduler = this.getRunningRapp() === "dyno_common_rapps/route_scheduler";
 
     return (
       <div className={this.props.classes.root}>
@@ -216,31 +266,37 @@ class App extends React.Component<ProvidedProps & Props, State> {
             </Button>
           </DialogActions>
         </Dialog>
-      {this.state.rosConnectionStatus === 'connected' && (
-        <Grid
-          className={classes.sectionContainer}
-          container
-          direction="column"
-          alignItems="stretch"
-          spacing={16}
-        >
-          <Grid item>
-            <RappStarter rosClient={this.state.rosClient} />
+        {this.state.rosConnectionStatus === 'connected' && (
+          <Grid
+            className={classes.sectionContainer}
+            container
+            direction="column"
+            alignItems="stretch"
+            spacing={16}
+          >
+            <Grid item>
+              <RappStarter rosClient={this.state.rosClient} />
+            </Grid>
+            <Grid item>
+              <Capabilities rosClient={this.state.rosClient} />
+            </Grid>
+            {show_cartographer && (
+              <Grid item>
+                <Cartographer rosClient={this.state.rosClient} />
+              </Grid>
+            )}
+            {show_world_state && (
+              <Grid item>
+                <WorldState rosClient={this.state.rosClient} />
+              </Grid>
+            )}
+            {show_route_scheduler && (
+              <Grid item>
+                <RouteScheduler rosClient={this.state.rosClient} />
+              </Grid>
+            )}
           </Grid>
-          <Grid item>
-            <Capabilities rosClient={this.state.rosClient} />
-          </Grid>
-          <Grid item>
-            <Cartographer rosClient={this.state.rosClient} />
-          </Grid>
-          <Grid item>
-            <WorldState rosClient={this.state.rosClient} />
-          </Grid>
-          <Grid item>
-            <RouteScheduler rosClient={this.state.rosClient} />
-          </Grid>
-        </Grid>
-      )}
+        )}
       </div>
     );
   }

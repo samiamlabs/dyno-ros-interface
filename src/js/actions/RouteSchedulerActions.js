@@ -44,6 +44,7 @@ class RouteSchedulerActions {
     if (typeof this.rosClient !== 'undefined') {
       this.locationsListener.dispose();
       this.locationQueueListener.dispose();
+      this.reportListener.dispose();
     }
   };
 
