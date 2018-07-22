@@ -1,7 +1,6 @@
 import {EventEmitter} from 'events';
 
 import dispatcher from '../dispatcher';
-// import Status from '../ros/msg/Status';
 
 import Immutable from 'immutable';
 

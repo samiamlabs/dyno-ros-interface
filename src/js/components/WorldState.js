@@ -9,6 +9,13 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 import {withStyles} from '@material-ui/core/styles';
 import withRoot from '../../withRoot';
 
@@ -29,7 +36,17 @@ type Props = {
   rosClient: Object
 };
 
-class WorldState extends React.Component<Props> {
+type State = {
+  addCurrentLocationDialogOpen: boolean,
+  currentLocationName: string
+};
+
+class WorldState extends React.Component<Props, State> {
+  state = {
+    addCurrentLocationDialogOpen: false,
+    currentLocationName: ''
+  };
+
   componentWillMount() {
     if (typeof this.props.rosClient !== 'undefined') {
       WorldStateActions.connect(this.props.rosClient);
@@ -40,12 +57,33 @@ class WorldState extends React.Component<Props> {
     WorldStateActions.disconnect();
   }
 
+  handleClickOpenAddCurrentLocationDialog = (event): void => {
+    this.setState({addCurrentLocationDialogOpen: true});
+  };
+
+  handleCloseAddCurrentLocationDialog = (event): void => {
+    this.setState({addCurrentLocationDialogOpen: false});
+  };
+
   handleAddCurrentLocation = (event: SyntheticEvent<HTMLButtonElement>) => {
-    WorldStateActions.addCurrentLocation();
+    WorldStateActions.addCurrentLocation(this.state.currentLocationName);
+    this.setState({addCurrentLocationDialogOpen: false});
+  };
+
+  handleSaveLocations = (event: SyntheticEvent<HTMLButtonElement>) => {
+    WorldStateActions.saveLocations();
+  };
+
+  handleLoadLocations = (event: SyntheticEvent<HTMLButtonElement>) => {
+    WorldStateActions.loadLocations();
   };
 
   handleClearLocations = (event: SyntheticEvent<HTMLButtonElement>) => {
     WorldStateActions.clearLocations();
+  };
+
+  handleAddCurrentLocationNameChange = event => {
+    this.setState({currentLocationName: event.target.value});
   };
 
   render() {
@@ -68,11 +106,17 @@ class WorldState extends React.Component<Props> {
                 spacing={24}
               >
                 <Grid item>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={this.handleClearLocations}
-                  >
+                  <Button onClick={this.handleSaveLocations}>
+                    Save Locations
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button onClick={this.handleLoadLocations}>
+                    Load Locations
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button color="secondary" onClick={this.handleClearLocations}>
                     Clear Locations
                   </Button>
                 </Grid>
@@ -80,7 +124,7 @@ class WorldState extends React.Component<Props> {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={this.handleAddCurrentLocation}
+                    onClick={this.handleClickOpenAddCurrentLocationDialog}
                   >
                     Add Current Location
                   </Button>
@@ -89,6 +133,47 @@ class WorldState extends React.Component<Props> {
             </Grid>
           </Grid>
         </Paper>
+        <Dialog
+          open={this.state.addCurrentLocationDialogOpen}
+          onClose={this.handleCloseAddCurrentLocationDialog}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Add current location</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Set a name for the location</DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="name"
+              onChange={this.handleAddCurrentLocationNameChange}
+              fullWidth
+              onKeyPress={event => {
+                if (event.key === 'Enter') {
+                  if (this.state.currentLocationName !== '') {
+                    this.handleAddCurrentLocation();
+                  }
+                  event.preventDefault();
+                }
+              }}
+            />
+          </DialogContent>
+
+          <DialogActions>
+            <Button
+              onClick={this.handleCloseAddCurrentLocationDialog}
+              color="primary"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={this.handleAddCurrentLocation}
+              disabled={this.state.currentLocationName === ''}
+              color="primary"
+            >
+              Set
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

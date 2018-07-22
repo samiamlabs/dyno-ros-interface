@@ -14,6 +14,12 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import {withStyles} from '@material-ui/core/styles';
 import withRoot from '../../withRoot';
 
@@ -26,6 +32,9 @@ const styles = (theme: Object) => ({
   },
   banner: {
     backgroundColor: theme.palette.primary.light
+  },
+  progress: {
+    margin: theme.spacing.unit * 2
   }
 });
 
@@ -33,7 +42,9 @@ class RappStarter extends React.PureComponent {
   constructor(...args) {
     super(...args);
 
-    this.state = {store: RappStarterStore.getState()};
+    this.state = {
+      store: RappStarterStore.getState()
+    };
   }
 
   componentWillMount() {
@@ -103,8 +114,7 @@ class RappStarter extends React.PureComponent {
 
       rappList.push(
         <ListItem key={name} onClick={this.handleRappClick.bind(this, name)}>
-          <ListItemText primary={displayName} />
-          {powerIcon}
+          <ListItemText primary={displayName} /> {powerIcon}
         </ListItem>
       );
     });
@@ -123,6 +133,28 @@ class RappStarter extends React.PureComponent {
             </Grid>
           </Grid>
         </Paper>
+        <div>
+          <Dialog
+            onClose={this.handleLoadingDialogClose}
+            open={state.get('loadingDialogOpen')}
+          >
+            <DialogContent>
+              <Grid container direction="column" alignItems="center">
+                <Grid item>
+                  <DialogContentText>
+                    Rapp working, please wait...
+                  </DialogContentText>
+                </Grid>
+                <Grid item>
+                  <CircularProgress
+                    className={classes.progress}
+                    align="center"
+                  />
+                </Grid>
+              </Grid>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
     );
   }

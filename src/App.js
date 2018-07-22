@@ -30,13 +30,13 @@ import RappStarter from './js/components/RappStarter.js';
 import Capabilities from './js/components/Capabilities.js';
 import Cartographer from './js/components/Cartographer';
 import WorldState from './js/components/WorldState';
+import RouteScheduler from './js/components/RouteScheduler';
 
 const styles = (theme: Object) => ({
   root: {
     flexGrow: 1
   },
   flex: {
-    // paddingTop: theme.spacing.unit * 20
     flexGrow: 1
   },
   menuButton: {
@@ -235,6 +235,9 @@ class App extends React.Component<ProvidedProps & Props, State> {
           </Grid>
           <Grid item>
             <WorldState rosClient={this.state.rosClient} />
+          </Grid>
+          <Grid item>
+            <RouteScheduler rosClient={this.state.rosClient} />
           </Grid>
         </Grid>
       )}
