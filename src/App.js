@@ -68,6 +68,7 @@ class App extends React.Component<ProvidedProps & Props, State> {
     anchorEl: null,
     hostnameDialogOpen: false,
     hostnameText: 'localhost',
+    portText: '9090',
     rosConnectionStatus: 'disconnected',
     cookies: new Cookies(),
     store: AppStore.getState()
@@ -78,8 +79,14 @@ class App extends React.Component<ProvidedProps & Props, State> {
     if (typeof hostname === 'undefined') {
       hostname = 'localhost';
     }
-    this.setState({hostnameText: hostname});
-    this.setRosClient(hostname);
+
+    let port = this.state.cookies.get('port');
+    if (typeof port === 'undefined') {
+      port = '9090';
+    }
+
+    this.setState({hostnameText: hostname, portText: port});
+    this.setRosClient(hostname, port);
 
     AppStore.on('change', this.getAll);
   }
@@ -94,8 +101,8 @@ class App extends React.Component<ProvidedProps & Props, State> {
     });
   };
 
-  setRosClient = (hostname: string) => {
-    const rosUrl = 'ws://' + hostname + ':9090';
+  setRosClient = (hostname: string, port: string) => {
+    const rosUrl = 'ws://' + hostname + ':' + port;
 
     let rosClient = new RosClient({
       url: rosUrl
@@ -140,11 +147,16 @@ class App extends React.Component<ProvidedProps & Props, State> {
     this.setState({hostnameText: event.target.value});
   };
 
+  handleUpdatePortText = event => {
+    this.setState({portText: event.target.value});
+  };
+
   handleSetHostname = event => {
-    this.setRosClient(this.state.hostnameText);
+    this.setRosClient(this.state.hostnameText, this.state.portText);
     this.handleCloseHostnameDialog();
     this.setState({rosConnectionStatus: 'disconnected'});
     this.state.cookies.set('hostname', this.state.hostnameText, {path: '/'});
+    this.state.cookies.set('port', this.state.portText, {path: '/'});
   };
 
   getRunningRapp = () => {
@@ -245,7 +257,7 @@ class App extends React.Component<ProvidedProps & Props, State> {
           <DialogTitle id="form-dialog-title">Change ROS hostname</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Set hostname for the websocket on your ROS system on port 9090.
+              Set hostname and port for the websocket on your ROS system.
             </DialogContentText>
             <TextField
               autoFocus
@@ -253,6 +265,14 @@ class App extends React.Component<ProvidedProps & Props, State> {
               label="hostname"
               value={this.state.hostnameText}
               onChange={this.handleUpdateHostnameText}
+              fullWidth
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              label="port"
+              value={this.state.portText}
+              onChange={this.handleUpdatePortText}
               fullWidth
             />
           </DialogContent>
