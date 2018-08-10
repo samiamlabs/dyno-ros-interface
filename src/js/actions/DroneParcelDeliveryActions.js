@@ -2,7 +2,7 @@
 
 import dispatcher from '../dispatcher';
 
-class RouteSchedulerActions {
+class DroneParcelDeliveryActions {
   connect = (rosClient: Object): void => {
     this.rosClient = rosClient;
 
@@ -17,19 +17,30 @@ class RouteSchedulerActions {
       }
     );
 
-    this.locationQueueListener = this.rosClient.topic.subscribe(
-      '/route_scheduler/location_queue',
-      'dyno_msgs/LocationArray',
+    this.objectsListener = this.rosClient.topic.subscribe(
+      '/world_state/objects',
+      'dyno_msgs/ObjectArray',
       message => {
         dispatcher.dispatch({
-          type: 'LOCATION_QUEUE',
-          locations: message.locations
+          type: 'OBJECTS',
+          objects: message.objects
+        });
+      }
+    );
+
+    this.locationQueueListener = this.rosClient.topic.subscribe(
+      '/drone_parcel_delivery/delivery_queue',
+      'dyno_msgs/DeliveryArray',
+      message => {
+        dispatcher.dispatch({
+          type: 'DELIVERY_QUEUE',
+          deliveries: message.deliveries
         });
       }
     );
 
     this.reportListener = this.rosClient.topic.subscribe(
-      '/route_scheduler/report',
+      '/drone_parcel_delivery/report',
       'std_msgs/String',
       message => {
         dispatcher.dispatch({
@@ -48,6 +59,13 @@ class RouteSchedulerActions {
     }
   };
 
+  setSelectedObject = name => {
+    dispatcher.dispatch({
+      type: 'SELECTED_OBJECT',
+      objectName: name
+    });
+  };
+
   setSelectedLocation = name => {
     dispatcher.dispatch({
       type: 'SELECTED_LOCATION',
@@ -55,19 +73,20 @@ class RouteSchedulerActions {
     });
   };
 
-  addLocation = (name: string): void => {
+  addDelivery = (object_name: string, location_name: string): void => {
     this.rosClient.topic.publish(
-      '/route_scheduler/add_location',
-      'std_msgs/String',
+      '/drone_parcel_delivery/add_delivery',
+      'dyno_msgs/Delivery',
       {
-        data: name
+        object_name,
+        location_name
       }
     );
   };
 
   start = (): void => {
     this.rosClient.topic.publish(
-      '/route_scheduler/start',
+      '/drone_parcel_delivery/start',
       'std_msgs/Empty',
       {}
     );
@@ -75,7 +94,7 @@ class RouteSchedulerActions {
 
   stop = (): void => {
     this.rosClient.topic.publish(
-      '/route_scheduler/stop',
+      '/drone_parcel_delivery/stop',
       'std_msgs/Empty',
       {}
     );
@@ -83,12 +102,12 @@ class RouteSchedulerActions {
 
   clear = (): void => {
     this.rosClient.topic.publish(
-      '/route_scheduler/clear',
+      '/drone_parcel_delivery/clear',
       'std_msgs/Empty',
       {}
     );
   }
 }
 
-const worldStateActions = new RouteSchedulerActions();
-export default worldStateActions;
+const droneParcelDeliveryActions = new DroneParcelDeliveryActions();
+export default droneParcelDeliveryActions;

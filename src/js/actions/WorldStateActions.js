@@ -41,6 +41,34 @@ class WorldStateActions {
       .then(result => {
       });
   };
+
+  clearObjects = (): void => {
+    this.rosClient.service
+      .call('/world_state/clear_objects', 'std_srvs/Empty', {})
+      .then(result => {
+      });
+  };
+
+  saveObjects = (): void => {
+    this.rosClient.service
+      .call('/world_state/save_objects', 'std_srvs/Empty', {})
+      .then(result => {
+      });
+  };
+
+  loadObjects = (): void => {
+    this.rosClient.service
+      .call('/world_state/load_objects', 'std_srvs/Empty', {})
+      .then(result => {
+      });
+  };
+
+  getObjectsFromUnity = (): void => {
+    this.rosClient.service
+      .call('/world_state/get_unity_objects', 'std_srvs/Empty', {})
+      .then(result => {
+      });
+  };
 }
 
 const cartographerActions = new WorldStateActions();

@@ -82,6 +82,22 @@ class WorldState extends React.Component<Props, State> {
     WorldStateActions.clearLocations();
   };
 
+  handleSaveObjects = (event: SyntheticEvent<HTMLButtonElement>) => {
+    WorldStateActions.saveObjects();
+  };
+
+  handleLoadObjects = (event: SyntheticEvent<HTMLButtonElement>) => {
+    WorldStateActions.loadObjects();
+  };
+
+  handleClearObjects = (event: SyntheticEvent<HTMLButtonElement>) => {
+    WorldStateActions.clearObjects();
+  };
+
+  handleGetObjectsFromUnity = (event: SyntheticEvent<HTMLButtonElement>) => {
+    WorldStateActions.getObjectsFromUnity();
+  };
+
   handleAddCurrentLocationNameChange = event => {
     this.setState({currentLocationName: event.target.value});
   };
@@ -127,6 +143,39 @@ class WorldState extends React.Component<Props, State> {
                     onClick={this.handleClickOpenAddCurrentLocationDialog}
                   >
                     Add Current Location
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item>
+              <Grid
+                container
+                className={classes.buttonContainer}
+                justify="space-around"
+                spacing={24}
+              >
+                <Grid item>
+                  <Button onClick={this.handleSaveObjects}>
+                    Save Objects
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button onClick={this.handleLoadObjects}>
+                    Load Objects
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button color="secondary" onClick={this.handleClearObjects}>
+                    Clear Objects
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={this.handleGetObjectsFromUnity}
+                  >
+                    Get Objects from Unity
                   </Button>
                 </Grid>
               </Grid>

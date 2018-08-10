@@ -33,6 +33,7 @@ import Capabilities from './js/components/Capabilities.js';
 import Cartographer from './js/components/Cartographer';
 import WorldState from './js/components/WorldState';
 import RouteScheduler from './js/components/RouteScheduler';
+import DroneParcelDelivery from './js/components/DroneParcelDelivery';
 
 const styles = (theme: Object) => ({
   root: {
@@ -199,6 +200,9 @@ class App extends React.Component<ProvidedProps & Props, State> {
 
     const show_route_scheduler = this.getRunningRapp() === "dyno_common_rapps/route_scheduler";
 
+    // Dev
+    show_world_state = true
+
     return (
       <div className={this.props.classes.root}>
         <AppBar position="static">
@@ -315,6 +319,9 @@ class App extends React.Component<ProvidedProps & Props, State> {
                 <RouteScheduler rosClient={this.state.rosClient} />
               </Grid>
             )}
+              <Grid item>
+                <DroneParcelDelivery rosClient={this.state.rosClient} />
+              </Grid>
           </Grid>
         )}
       </div>
