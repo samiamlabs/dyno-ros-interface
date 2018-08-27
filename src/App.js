@@ -199,9 +199,10 @@ class App extends React.Component<ProvidedProps & Props, State> {
     });
 
     const show_route_scheduler = this.getRunningRapp() === "dyno_common_rapps/route_scheduler";
+    const show_quadrotor_parcel_delivery = this.getRunningRapp() === "dyno_quadrotor_rapps/parcel_delivery";
 
     // Dev
-    show_world_state = true
+    // show_world_state = true
 
     return (
       <div className={this.props.classes.root}>
@@ -319,9 +320,11 @@ class App extends React.Component<ProvidedProps & Props, State> {
                 <RouteScheduler rosClient={this.state.rosClient} />
               </Grid>
             )}
+            {show_quadrotor_parcel_delivery && (
               <Grid item>
                 <DroneParcelDelivery rosClient={this.state.rosClient} />
               </Grid>
+            )}
           </Grid>
         )}
       </div>
