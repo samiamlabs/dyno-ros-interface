@@ -34,6 +34,7 @@ import Cartographer from './js/components/Cartographer';
 import WorldState from './js/components/WorldState';
 import RouteScheduler from './js/components/RouteScheduler';
 import DroneParcelDelivery from './js/components/DroneParcelDelivery';
+import Navigator from './js/components/Navigator';
 
 const styles = (theme: Object) => ({
   root: {
@@ -325,6 +326,9 @@ class App extends React.Component<ProvidedProps & Props, State> {
                 <DroneParcelDelivery rosClient={this.state.rosClient} />
               </Grid>
             )}
+            <Grid item>
+              <Navigator useDatGui={false} rosClient={this.state.rosClient} />
+            </Grid>
           </Grid>
         )}
       </div>

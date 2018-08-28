@@ -5,7 +5,23 @@ import NavigatorStore from '../stores/NavigatorStore';
 
 import NavigatorGame from '../navigator/NavigatorGame';
 
-export default class Navigator extends React.Component {
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+
+import {withStyles} from '@material-ui/core/styles';
+import withRoot from '../../withRoot';
+
+const styles = (theme: Object) => ({
+  root: {
+    flexGrow: 1
+  },
+  banner: {
+    backgroundColor: theme.palette.primary.light
+  },
+});
+
+class Navigator extends React.Component {
   componentDidMount() {
     NavigatorStore.on('change', this.updateStoreState);
 
@@ -14,11 +30,7 @@ export default class Navigator extends React.Component {
 
     this.storeState = NavigatorStore.getState();
 
-    this.navigatorGame = new NavigatorGame({
-      storeState: this.storeState,
-      useDatGui: this.props.useDatGui,
-      actions: this.actions
-    });
+    this.navigatorGame = new NavigatorGame({storeState: this.storeState, useDatGui: this.props.useDatGui, actions: this.actions});
   }
 
   componentWillUnmount() {
@@ -34,6 +46,8 @@ export default class Navigator extends React.Component {
   };
 
   render() {
+    const {classes} = this.props;
+
     const datGuiStyle = {
       position: 'absolute',
       top: '90px',
@@ -41,11 +55,25 @@ export default class Navigator extends React.Component {
     };
 
     return (
-      <div id="phaser-map">
-        <div id="phaser-map-dat-gui" style={datGuiStyle} />
-      </div>
-    );
+    <Paper>
+      <Grid container direction="column" justify="flex-start">
+        <Grid item>
+          <Paper className={classes.banner}>
+            <Typography align="center">Navigator</Typography>
+          </Paper>
+        </Grid>
+        <Grid item>
+          <div id="phaser-map">
+            <div id="phaser-map-dat-gui" style={datGuiStyle}/>
+          </div>
+        </Grid>
+      </Grid>
+    </Paper>);
   }
 }
 
-Map.defaultProps = {useDatGui: false};
+Map.defaultProps = {
+  useDatGui: false
+};
+
+export default withRoot(withStyles(styles)(Navigator));
