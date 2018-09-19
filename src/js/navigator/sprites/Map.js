@@ -94,7 +94,7 @@ export default class Map extends Phaser.GameObjects.Sprite {
         let val;
 
         var red, green, blue;
-        if (data === -1) {
+        if (data === -1 || data === 100) {
           // Make unexplored black
           val = Math.round(this.unexploredBrightness * 255);
 
